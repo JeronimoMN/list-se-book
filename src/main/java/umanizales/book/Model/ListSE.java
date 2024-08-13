@@ -1,8 +1,13 @@
 package umanizales.book.Model;
 
 import lombok.Data;
+import org.springframework.stereotype.Service;
+import umanizales.book.Model.DTO.BookByPositionDTO;
+import umanizales.book.Model.DTO.OrderBookCategoryDTO;
+
 import java.util.Objects;
 
+@Service
 @Data
 public class ListSE {
     private Node head;
@@ -124,12 +129,12 @@ public class ListSE {
         if (head != null) {
 
             //Si el nodo a buscar es la cabeza
-            if(id == head.getData().getId()){
+            if(id == head.getData().getCode()){
                 head= head.getNext();
             }
             else{
                 Node temp = this.head;
-                while (temp.getNext().getNext() != null && !Objects.equals(temp.getNext().getData().getId(), id)){
+                while (temp.getNext().getNext() != null && !Objects.equals(temp.getNext().getData().getCode(), id)){
                     temp = temp.getNext();
                 }
                 temp.setNext(temp.getNext().getNext());
@@ -204,6 +209,53 @@ public class ListSE {
         }else{
             System.out.println("Ningun dato que mostrar");
         }
+    }
+
+    /*
+    Quiero que me aparezcan los temas en el siguiente orden: Post-apocaliptico, Suspenso, Superación Personal.
+
+    Algoritmo para organizar por categoria
+    La lista esta vacia
+        Si
+            Devolver un mensaje: "No hay datos para ordenar"
+        No
+
+
+     */
+
+    public String orderByCategory(OrderBookCategoryDTO orderBook){
+        if(head != null){
+            ListSE newListSE = new ListSE();
+            for(String orderCategory: orderBook.getCategories()){
+                Node temp= head;
+                while(temp != null){
+                    if(temp.getData().getCategory().getName().equals(orderCategory)){
+                        newListSE.add(temp.getData());
+                    }
+                    temp = temp.getNext();
+                }
+            }
+            head= newListSE.getHead();
+            return "List Ordered!";
+        }else{
+            return "There is not any data to order!";
+        }
+    }
+
+
+    public int getCountKidsByCategoryCode(String code){
+        int count = 0;
+        if(this.head != null){
+            Node temp = this.head;
+            while(temp != null){
+
+                if(temp.getData().getCategory().getCode().equals(code)){
+                    count++;
+                }
+                temp = temp.getNext();
+            }
+        }
+        return count;
     }
 
 
