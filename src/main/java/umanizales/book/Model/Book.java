@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Book {
-    private String id;
-    private String titulo;
-    private String autor;
-    private String cantHojas;
-    private String genero;
+    private String code;
+    private String title;
+    private String author;
+    private String pages;
+    private Category category;
     private String sinopsis;
 }
