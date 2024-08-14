@@ -69,7 +69,7 @@ public class ListSEController {
     @GetMapping(path = "/booksbycategory")
     public ArrayList getBooksByCategory() {
         ArrayList<BookByCategoryDTO> booksByCategory = new ArrayList<>();
-        for (Category cat : categoryService.getCategory()) {
+        for (Category cat : categoryService.getListCategories()){
             int count = listSEService.getBooks().getCountKidsByCategoryCode(cat.getCode());
             if (count > 0) {
                 booksByCategory.add(new BookByCategoryDTO(cat, count));
