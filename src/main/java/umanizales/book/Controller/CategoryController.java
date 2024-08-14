@@ -15,11 +15,19 @@ public class CategoryController {
 
     @GetMapping
     public List<Category> getCategories (){
-        return this.categoryService.getCategory();
+        return this.categoryService.getListCategories();
     }
 
-    @GetMapping("/kk")
-    public Category getCategoryById(){
-        return this.categoryService.getCategoryByCode("2");
+    @PostMapping("/categorybycode")
+    public Category getCategoryById(@RequestBody String code){
+        return this.categoryService.getCategoryByCode(code);
+    }
+
+    @PostMapping
+    public String addCategory(@RequestBody Category category){ return this.categoryService.newCategory(category); }
+
+    @DeleteMapping
+    public String deleteCategeryByCode(@RequestBody String code){
+        return this.categoryService.deleteCategory(code);
     }
 }

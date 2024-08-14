@@ -10,14 +10,14 @@ import java.util.List;
 @Service
 @Data
 public class CategoryService {
-    private List<Category> category;
+    private List<Category> listCategories;
 
     public CategoryService (){
-        category = new ArrayList<>();
-        category.add(new Category("1", "Post-Apocaliptico"));
-        category.add(new Category("2", "Suspenso"));
-        category.add(new Category("3", "Romance"));
-        category.add(new Category("4", "Superación Personal"));
+        listCategories = new ArrayList<>();
+        listCategories.add(new Category("1", "Post-Apocaliptico"));
+        listCategories.add(new Category("2", "Suspenso"));
+        listCategories.add(new Category("3", "Romance"));
+        listCategories.add(new Category("4", "Superación Personal"));
     }
 
 
@@ -32,11 +32,38 @@ public class CategoryService {
      */
 
     public Category getCategoryByCode (String id) {
-        for( Category cat: category){
+        for( Category cat: listCategories){
             if(cat.getCode() == id){
                 return cat;
             }
         }
         return null;
     }
+
+    public String newCategory (Category category){
+        if(category != null){
+            for (int i = 0; i < listCategories.size(); i++) {
+                if(listCategories.get(i) == category){
+                    return null;
+                }
+                i++;
+            }
+            listCategories.add(category);
+            return "Category Added Successfully!";
+        }
+        return null;
+    }
+
+    public String deleteCategory (String code){
+        if(listCategories != null){
+            for (int i = 0; i < listCategories.size(); i++) {
+                if(listCategories.get(i).getCode().equals(code)){
+                    listCategories.remove(i);
+                }
+            }
+            return "Category Eliminated!";
+        }
+        return "That Category doesn't exists";
+    }
+
 }
