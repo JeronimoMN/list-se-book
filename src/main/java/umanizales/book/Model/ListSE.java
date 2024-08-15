@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.stereotype.Service;
 import umanizales.book.Model.DTO.BookByPositionDTO;
 import umanizales.book.Model.DTO.OrderBookCategoryDTO;
+import umanizales.book.exception.ListSEException;
 
 import java.util.Objects;
 
@@ -26,13 +27,20 @@ public class ListSE {
         Se envuelve el dato en un nodo y ese nodo es la cabeza
      */
 
-    public void add (Book rq){
+    public void add (Book rq) throws ListSEException {
         if (head != null) {
             Node temp = this.head;
             while (temp.getNext() != null){
+                if(temp.getData().getCode().equals(rq.getCode())){
+                    throw new ListSEException("The book is already in the list");
+                }
                 temp = temp.getNext();
             }
-            //Parado en el ultimo Nodo.
+            if(temp.getData().getCode().equals(rq.getCode())){
+                throw new ListSEException("The book is already in the list");
+            }
+
+            //Parado en el ultimo.
             Node newNode = new Node(rq);
             temp.setNext(newNode);
         }else {
@@ -80,7 +88,7 @@ public class ListSE {
 
      */
 
-    public String addByPosition (Book book, int position){
+    public String addByPosition (Book book, int position) throws ListSEException{
         if( position > 0){
             if(position == 1){
                 addStart(book);
@@ -223,7 +231,7 @@ public class ListSE {
 
      */
 
-    public String orderByCategory(OrderBookCategoryDTO orderBook){
+    public String orderByCategory(OrderBookCategoryDTO orderBook) throws ListSEException{
         if(head != null){
             ListSE newListSE = new ListSE();
             for(String orderCategory: orderBook.getCategories()){

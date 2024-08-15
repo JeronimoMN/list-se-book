@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import umanizales.book.Model.Book;
 import umanizales.book.Model.Category;
 import umanizales.book.Model.ListSE;
+import umanizales.book.exception.ListSEException;
 
 @Service
 @Data
@@ -12,7 +13,7 @@ public class ListSEService {
     private ListSE books;
 
 
-    public ListSEService(){
+    public ListSEService() throws ListSEException {
         books = new ListSE();
         books.add(new Book("1", "Los juegos del hambre", "Suzzane Collins", "400", new Category("1", "Post-Apocaliptico"), "El comienzo de una gran historia"));
         books.add(new Book("2", "En Llamas", "Suzzane Collins", "500", new Category("1", "Post-Apocaliptico"), "Muy Romantico"));

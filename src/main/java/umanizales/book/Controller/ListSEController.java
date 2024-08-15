@@ -1,15 +1,18 @@
 package umanizales.book.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umanizales.book.Model.Book;
 import umanizales.book.Model.Category;
 import umanizales.book.Model.DTO.BookByCategoryDTO;
 import umanizales.book.Model.DTO.BookByPositionDTO;
 import umanizales.book.Model.DTO.OrderBookCategoryDTO;
-import umanizales.book.Model.Node;
+import umanizales.book.Model.DTO.ResponseDTO;
 import umanizales.book.Service.CategoryService;
 import umanizales.book.Service.ListSEService;
+import umanizales.book.exception.ListSEException;
 
 import java.util.ArrayList;
 
@@ -22,14 +25,23 @@ public class ListSEController {
     private CategoryService categoryService;
 
     @GetMapping
-    public Node getBooks() {
-        return this.listSEService.getBooks().getHead();
+    public ResponseEntity<ResponseDTO> getBooks() {
+        return new ResponseEntity<>(new ResponseDTO(200, listSEService.getBooks().getHead(), null), HttpStatus.OK);
     }
 
     @PostMapping
-    public String addBook(@RequestBody Book book) {
-        this.listSEService.getBooks().add(book);
-        return "Book Successfully Added!";
+    public ResponseEntity<ResponseDTO> addBook(@RequestBody Book book) {
+
+        Category category = categoryService.getCategoryByCode(book.getCategory().getCode());
+        if(category == null){
+            return new ResponseEntity<>(new ResponseDTO(200, "That category don't exist", null), HttpStatus.OK);
+        }try {
+            this.listSEService.getBooks().add(book);
+        }catch (ListSEException e){
+            return new ResponseEntity<>(new ResponseDTO(409, e.getMessage(), null), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponseDTO(200, "Book Added Successfully", null), HttpStatus.OK);
+
     }
 
     @PostMapping(path = "/toStart")
@@ -39,7 +51,7 @@ public class ListSEController {
     }
 
     @PostMapping(path = "/byPosition")
-    public String addBookByPosition(@RequestBody BookByPositionDTO rq) {
+    public String addBookByPosition(@RequestBody BookByPositionDTO rq)  throws ListSEException{
         return this.listSEService.getBooks().addByPosition(rq.getBook(), rq.getPosition());
     }
 
@@ -62,7 +74,7 @@ public class ListSEController {
     }
 
     @PostMapping(path = "/order_books")
-    public String orderBook(@RequestBody OrderBookCategoryDTO orderBookCategoryDTO) {
+    public String orderBook(@RequestBody OrderBookCategoryDTO orderBookCategoryDTO) throws ListSEException{
         return this.listSEService.getBooks().orderByCategory(orderBookCategoryDTO);
     }
 
