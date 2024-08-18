@@ -27,23 +27,23 @@ public class ListSE {
         Se envuelve el dato en un nodo y ese nodo es la cabeza
      */
 
-    public void add (Book rq) throws ListSEException {
+    public void add(Book rq) throws ListSEException {
         if (head != null) {
             Node temp = this.head;
-            while (temp.getNext() != null){
-                if(temp.getData().getCode().equals(rq.getCode())){
+            while (temp.getNext() != null) {
+                if (temp.getData().getCode().equals(rq.getCode())) {
                     throw new ListSEException("The book is already in the list");
                 }
                 temp = temp.getNext();
             }
-            if(temp.getData().getCode().equals(rq.getCode())){
+            if (temp.getData().getCode().equals(rq.getCode())) {
                 throw new ListSEException("The book is already in the list");
             }
 
             //Parado en el ultimo.
             Node newNode = new Node(rq);
             temp.setNext(newNode);
-        }else {
+        } else {
             head = new Node(rq);
         }
         size++;
@@ -61,12 +61,12 @@ public class ListSE {
 
      */
 
-    public void addStart (Book rq){
-        if(head != null){
+    public void addStart(Book rq) {
+        if (head != null) {
             Node newNode = new Node(rq);
             newNode.setNext(head);
             head = newNode;
-        }else{
+        } else {
             head = new Node(rq);
         }
         size++;
@@ -88,22 +88,21 @@ public class ListSE {
 
      */
 
-    public String addByPosition (Book book, int position) throws ListSEException{
-        if( position > 0){
-            if(position == 1){
+    public String addByPosition(Book book, int position) throws ListSEException {
+        if (position > 0) {
+            if (position == 1) {
                 addStart(book);
                 return "Book Successfully Added!";
-            }else{
-                if(position > this.size){
+            } else {
+                if (position > this.size) {
                     add(book);
                     return "Book Successfully Added at the final!";
-                }
-                else{
-                    int i= 1;
-                    Node temp= this.head;
-                    while(i < (position-1)){
-                        temp= temp.getNext();
-                        i+= 1;
+                } else {
+                    int i = 1;
+                    Node temp = this.head;
+                    while (i < (position - 1)) {
+                        temp = temp.getNext();
+                        i += 1;
                     }
                     Node newNode = new Node(book);
                     newNode.setNext(temp.getNext());
@@ -111,7 +110,7 @@ public class ListSE {
                     return "Book Successfully Added";
                 }
             }
-        }else{
+        } else {
             return "It can not be added in that position!";
         }
     }
@@ -133,22 +132,21 @@ public class ListSE {
         Devolver un mensaje "No hay ningun dato"
      */
 
-    public void delete (String id){
+    public void delete(String id) {
         if (head != null) {
 
             //Si el nodo a buscar es la cabeza
-            if(id == head.getData().getCode()){
-                head= head.getNext();
-            }
-            else{
+            if (id == head.getData().getCode()) {
+                head = head.getNext();
+            } else {
                 Node temp = this.head;
-                while (temp.getNext().getNext() != null && !Objects.equals(temp.getNext().getData().getCode(), id)){
+                while (temp.getNext().getNext() != null && !Objects.equals(temp.getNext().getData().getCode(), id)) {
                     temp = temp.getNext();
                 }
                 temp.setNext(temp.getNext().getNext());
             }
             size--;
-        }else{
+        } else {
             System.out.println("There is nothing to delete");
         }
     }
@@ -169,16 +167,16 @@ public class ListSE {
         Cabeza es igual a la cabeza de la nueva lista.
      */
 
-    public void invert (){
-        if(head != null){
+    public void invert() {
+        if (head != null) {
             ListSE newList = new ListSE();
-            Node temp= this.head;
-            while(temp != null){
+            Node temp = this.head;
+            while (temp != null) {
                 newList.addStart(temp.getData());
-                temp= temp.getNext();
+                temp = temp.getNext();
             }
             head = newList.getHead();
-        }else{
+        } else {
             System.out.println("Ningun dato para mostrar");
         }
     }
@@ -202,11 +200,11 @@ public class ListSE {
 
      */
 
-    public void changeExtremes (){
-        if(head != null){
+    public void changeExtremes() {
+        if (head != null) {
             Node ultimo;
             Node temp = this.head;
-            while(temp.getNext().getNext() != null){
+            while (temp.getNext().getNext() != null) {
                 temp = temp.getNext();
             }
             ultimo = temp.getNext();
@@ -214,7 +212,7 @@ public class ListSE {
             ultimo.setNext(temp);
             head = ultimo;
             temp.getNext().setNext(null);
-        }else{
+        } else {
             System.out.println("Ningun dato que mostrar");
         }
     }
@@ -231,33 +229,33 @@ public class ListSE {
 
      */
 
-    public String orderByCategory(OrderBookCategoryDTO orderBook) throws ListSEException{
-        if(head != null){
+    public String orderByCategory(OrderBookCategoryDTO orderBook) throws ListSEException {
+        if (head != null) {
             ListSE newListSE = new ListSE();
-            for(String orderCategory: orderBook.getCategories()){
-                Node temp= head;
-                while(temp != null){
-                    if(temp.getData().getCategory().getName().equals(orderCategory)){
+            for (String orderCategory : orderBook.getCategories()) {
+                Node temp = head;
+                while (temp != null) {
+                    if (temp.getData().getCategory().getName().equals(orderCategory)) {
                         newListSE.add(temp.getData());
                     }
                     temp = temp.getNext();
                 }
             }
-            head= newListSE.getHead();
+            head = newListSE.getHead();
             return "List Ordered!";
-        }else{
+        } else {
             return "There is not any data to order!";
         }
     }
 
 
-    public int getCountKidsByCategoryCode(String code){
+    public int getCountBooksByCategoryCode(String code) {
         int count = 0;
-        if(this.head != null){
+        if (this.head != null) {
             Node temp = this.head;
-            while(temp != null){
+            while (temp != null) {
 
-                if(temp.getData().getCategory().getCode().equals(code)){
+                if (temp.getData().getCategory().getCode().equals(code)) {
                     count++;
                 }
                 temp = temp.getNext();
@@ -267,9 +265,51 @@ public class ListSE {
     }
 
 
+    public String getOrderBooksByCetegoryByPages() throws ListSEException {
+        if (head == null) {
+            return "There is not any data to order!";
+        }
+        ListSE newList = new ListSE();
+        Node temp = head.getNext();
+        newList.add(head.getData());
+        while (temp != null) {
+            int tempListQuantityPages = Integer.parseInt(temp.getData().getPages());
+            Node tempNewListQuantityPages = newList.getHead();
+            int count = 1;
+
+            //Si la cantidad de hojas del temp es más grande que las de la cabeza de la nueva lista
+            if (tempListQuantityPages > Integer.parseInt(newList.getHead().getData().getPages())) {
+                newList.addStart(temp.getData());
+            } else {
+                while (true) {
+                    int temp2numbers = Integer.parseInt(tempNewListQuantityPages.getData().getPages());
+                    //Avanza al sig
+                    if (temp2numbers > tempListQuantityPages) {
+                        if (tempNewListQuantityPages.getNext() == null) {
+                            newList.add(temp.getData());
+                            break;
+                        }
+                        count++;
+                        tempNewListQuantityPages = tempNewListQuantityPages.getNext();
+                    }
+                    if (temp2numbers <= tempListQuantityPages) {
+                        if (temp2numbers == tempListQuantityPages) {
+                            newList.add(temp.getData());
+                            break;
+                        }
+                        newList.addByPosition(temp.getData(), count);
+                        break;
+                    }
+                }
+            }
+            temp = temp.getNext();
+        }
+        head = newList.getHead();
+        return "List Ordered by Pages!";
+    }
+
 
     /*
-    4. Organizar por categoria
     6. Suma total por precio del libro
     7. Contar libros por categoria.
 
