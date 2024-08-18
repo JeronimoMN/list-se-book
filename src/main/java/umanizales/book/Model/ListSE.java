@@ -2,7 +2,6 @@ package umanizales.book.Model;
 
 import lombok.Data;
 import org.springframework.stereotype.Service;
-import umanizales.book.Model.DTO.BookByPositionDTO;
 import umanizales.book.Model.DTO.OrderBookCategoryDTO;
 import umanizales.book.exception.ListSEException;
 
@@ -61,8 +60,16 @@ public class ListSE {
 
      */
 
-    public void addStart(Book rq) {
+    public void addStart(Book rq) throws ListSEException {
         if (head != null) {
+
+            Node temp = head;
+            while (temp.getNext() != null) {
+                if (temp.getData().getCode().equals(rq.getCode())) {
+                    throw new ListSEException("The book is already in the list");
+                }
+                temp = temp.getNext();
+            }
             Node newNode = new Node(rq);
             newNode.setNext(head);
             head = newNode;
@@ -167,7 +174,7 @@ public class ListSE {
         Cabeza es igual a la cabeza de la nueva lista.
      */
 
-    public void invert() {
+    public void invert() throws ListSEException {
         if (head != null) {
             ListSE newList = new ListSE();
             Node temp = this.head;
@@ -225,8 +232,6 @@ public class ListSE {
         Si
             Devolver un mensaje: "No hay datos para ordenar"
         No
-
-
      */
 
     public String orderByCategory(OrderBookCategoryDTO orderBook) throws ListSEException {
@@ -264,7 +269,6 @@ public class ListSE {
         return count;
     }
 
-
     public String getOrderBooksByCetegoryByPages() throws ListSEException {
         if (head == null) {
             return "There is not any data to order!";
@@ -274,7 +278,7 @@ public class ListSE {
         newList.add(head.getData());
         while (temp != null) {
             int tempListQuantityPages = Integer.parseInt(temp.getData().getPages());
-            Node tempNewListQuantityPages = newList.getHead();
+            Node temp2 = newList.getHead();
             int count = 1;
 
             //Si la cantidad de hojas del temp es más grande que las de la cabeza de la nueva lista
@@ -282,18 +286,18 @@ public class ListSE {
                 newList.addStart(temp.getData());
             } else {
                 while (true) {
-                    int temp2numbers = Integer.parseInt(tempNewListQuantityPages.getData().getPages());
+                    int tempNewListQuantityPages = Integer.parseInt(temp2.getData().getPages());
                     //Avanza al sig
-                    if (temp2numbers > tempListQuantityPages) {
-                        if (tempNewListQuantityPages.getNext() == null) {
+                    if (tempNewListQuantityPages > tempListQuantityPages) {
+                        if (temp2.getNext() == null) {
                             newList.add(temp.getData());
                             break;
                         }
                         count++;
-                        tempNewListQuantityPages = tempNewListQuantityPages.getNext();
+                        temp2 = temp2.getNext();
                     }
-                    if (temp2numbers <= tempListQuantityPages) {
-                        if (temp2numbers == tempListQuantityPages) {
+                    if (tempNewListQuantityPages <= tempListQuantityPages) {
+                        if (tempNewListQuantityPages == tempListQuantityPages) {
                             newList.add(temp.getData());
                             break;
                         }
@@ -307,12 +311,4 @@ public class ListSE {
         head = newList.getHead();
         return "List Ordered by Pages!";
     }
-
-
-    /*
-    6. Suma total por precio del libro
-    7. Contar libros por categoria.
-
-     */
-
 }

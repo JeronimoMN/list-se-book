@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import umanizales.book.Model.Book;
 import umanizales.book.Model.Category;
 import umanizales.book.Model.DTO.*;
-import umanizales.book.Model.Node;
 import umanizales.book.Service.CategoryService;
 import umanizales.book.Service.ListSEService;
 import umanizales.book.exception.ListSEException;
@@ -44,9 +43,18 @@ public class ListSEController {
     }
 
     @PostMapping(path = "/to_start")
-    public String addBookStart(@RequestBody Book book) {
-        this.listSEService.getBooks().addStart(book);
-        return "Book Successfully Added!";
+    public ResponseEntity<ResponseDTO> addBookStart(@RequestBody Book book) throws ListSEException {
+
+        Category category = categoryService.getCategoryByCode(book.getCategory().getCode());
+        if (category == null) {
+            return new ResponseEntity<>(new ResponseDTO(200, "That category don't exist", null), HttpStatus.OK);
+        }
+        try {
+            this.listSEService.getBooks().addStart(book);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409, e.getMessage(), null), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponseDTO(200, "Book Added Successfully", null), HttpStatus.OK);
     }
 
     @PostMapping(path = "/by_position")
@@ -61,7 +69,7 @@ public class ListSEController {
     }
 
     @GetMapping(path = "/invert")
-    public String invert() {
+    public String invert() throws ListSEException {
         listSEService.getBooks().invert();
         return "Inverted List!";
     }
