@@ -3,16 +3,18 @@ package umanizales.book.Service;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 import umanizales.book.Model.Category;
+import umanizales.book.exception.CategoryException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Data
 public class CategoryService {
     private List<Category> listCategories;
 
-    public CategoryService (){
+    public CategoryService() {
         listCategories = new ArrayList<>();
         listCategories.add(new Category("1", "Post-Apocaliptico"));
         listCategories.add(new Category("2", "Suspenso"));
@@ -31,33 +33,34 @@ public class CategoryService {
         Retornar Null
      */
 
-    public Category getCategoryByCode (String id) {
-        for( Category cat: listCategories){
-            if(cat.getCode() == id){
+    public Category getCategoryByCode(String id) {
+        for (Category cat : listCategories) {
+            if (cat.getCode().equals(id)) {
                 return cat;
             }
         }
         return null;
     }
 
-    public String newCategory (Category category){
-        if(category != null){
+    public String newCategory(Category category) throws CategoryException {
+        if (category != null) {
             for (int i = 0; i < listCategories.size(); i++) {
-                if(listCategories.get(i) == category){
-                    return null;
+                if (Objects.equals(listCategories.get(i).getName(), category.getName())) {
+                    throw new CategoryException("The category is already in the list");
                 }
                 i++;
             }
             listCategories.add(category);
             return "Category Added Successfully!";
+        } else {
+            throw new CategoryException("The category is incorrect");
         }
-        return null;
     }
 
-    public String deleteCategory (String code){
-        if(listCategories != null){
+    public String deleteCategory(String code) {
+        if (listCategories != null) {
             for (int i = 0; i < listCategories.size(); i++) {
-                if(listCategories.get(i).getCode().equals(code)){
+                if (listCategories.get(i).getCode().equals(code)) {
                     listCategories.remove(i);
                 }
             }
@@ -65,5 +68,4 @@ public class CategoryService {
         }
         return "That Category doesn't exists";
     }
-
 }
