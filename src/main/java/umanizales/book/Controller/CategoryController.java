@@ -1,9 +1,13 @@
 package umanizales.book.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umanizales.book.Model.Category;
+import umanizales.book.Model.DTO.ResponseDTO;
 import umanizales.book.Service.CategoryService;
+import umanizales.book.exception.CategoryException;
 
 import java.util.List;
 
@@ -14,8 +18,8 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    public List<Category> getCategories (){
-        return this.categoryService.getListCategories();
+    public ResponseEntity<ResponseDTO> getCategories (){
+        return new ResponseEntity<>(new ResponseDTO(200, this.categoryService.getListCategories(), null), HttpStatus.OK);
     }
 
     @PostMapping("/categorybycode")
@@ -24,7 +28,15 @@ public class CategoryController {
     }
 
     @PostMapping
-    public String addCategory(@RequestBody Category category){ return this.categoryService.newCategory(category); }
+    public ResponseEntity<ResponseDTO> addCategory(@RequestBody Category category){
+        if(category == null){
+            return new ResponseEntity<>(new ResponseDTO(200, "The category is incorrect", null), HttpStatus.OK);
+        }try{
+            return new ResponseEntity<>(new ResponseDTO(200,  this.categoryService.newCategory(category), null), HttpStatus.OK);
+        }catch (CategoryException e){
+            return new ResponseEntity<>(new ResponseDTO(409, e.getMessage(), null), HttpStatus.OK);
+        }
+    }
 
     @DeleteMapping
     public String deleteCategeryByCode(@RequestBody String code){
