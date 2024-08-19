@@ -18,28 +18,29 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO> getCategories (){
+    public ResponseEntity<ResponseDTO> getCategories() {
         return new ResponseEntity<>(new ResponseDTO(200, this.categoryService.getListCategories(), null), HttpStatus.OK);
     }
 
     @PostMapping("/categorybycode")
-    public Category getCategoryById(@RequestBody String code){
-        return this.categoryService.getCategoryByCode(code);
+    public ResponseEntity<ResponseDTO> getCategoryById(@RequestBody String code) {
+        return new ResponseEntity<>(new ResponseDTO(200, this.categoryService.getCategoryByCode(code), null), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> addCategory(@RequestBody Category category){
-        if(category == null){
+    public ResponseEntity<ResponseDTO> addCategory(@RequestBody Category category) {
+        if (category == null) {
             return new ResponseEntity<>(new ResponseDTO(200, "The category is incorrect", null), HttpStatus.OK);
-        }try{
-            return new ResponseEntity<>(new ResponseDTO(200,  this.categoryService.newCategory(category), null), HttpStatus.OK);
-        }catch (CategoryException e){
+        }
+        try {
+            return new ResponseEntity<>(new ResponseDTO(200, this.categoryService.newCategory(category), null), HttpStatus.OK);
+        } catch (CategoryException e) {
             return new ResponseEntity<>(new ResponseDTO(409, e.getMessage(), null), HttpStatus.OK);
         }
     }
 
     @DeleteMapping
-    public String deleteCategeryByCode(@RequestBody String code){
-        return this.categoryService.deleteCategory(code);
+    public ResponseEntity<ResponseDTO> deleteCategeryByCode(@RequestBody String code) {
+        return new ResponseEntity<>(new ResponseDTO(200, this.categoryService.deleteCategory(code), null), HttpStatus.OK);
     }
 }

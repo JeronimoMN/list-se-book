@@ -22,17 +22,6 @@ public class CategoryService {
         listCategories.add(new Category("4", "Superación Personal"));
     }
 
-
-    /*
-    Obtener categoria por código
-
-    Mientras categoria sea menor al tamaño de la lista
-        Si la identificación de la categoria es igual al id ingresado por el usuario
-            Retornar  la categoria
-    No
-        Retornar Null
-     */
-
     public Category getCategoryByCode(String id) {
         for (Category cat : listCategories) {
             if (cat.getCode().equals(id)) {

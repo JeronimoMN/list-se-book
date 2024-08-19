@@ -13,20 +13,7 @@ public class ListSE {
     private Node head;
     private int size;
 
-    /*
-    Algoritmo para adicionar un libro (niño).
-
-    ¿Hay nodo en la cabeza?
-    si
-        crear una variable temporal
-        Recorrer la lista hasta estar en el ultimo nodo
-        Se envuelve el dato en un nodo
-        y le digo al ultimo que tome el nuevo nodo.
-    no
-        Se envuelve el dato en un nodo y ese nodo es la cabeza
-     */
-
-    public void add(Book rq) throws ListSEException {
+    public void addEnd(Book rq) throws ListSEException {
         if (head != null) {
             Node temp = this.head;
             while (temp.getNext() != null) {
@@ -48,18 +35,6 @@ public class ListSE {
         size++;
     }
 
-    /*
-    Algoritmo para adicionar un libro (niño) al inicio.
-    Si la cabeza esta vacia
-    si
-        Se envuelve el dato en un nodo y ese nodo es la cabeza
-    no
-        Se envuelve el dato en un nodo
-        El nodo agarra la cabeza
-        La cabeza es igual a nuevo costal
-
-     */
-
     public void addStart(Book rq) throws ListSEException {
         if (head != null) {
 
@@ -79,102 +54,57 @@ public class ListSE {
         size++;
     }
 
-    /*
-    Algoritmo para agregar un libro en una posición especifica.
-    Si hay datos en la cabeza?
-    Si
-        Se guarda el dato en el nodo y este es cabeza
-    No
-        declarar temporal
-        Mientras i sea menor que la posición
-            temporal avanza al siguiente
-
-        Se guarda el dato en el nodo
-        nuevoNodo toma el sig del temporal
-        Temporal toma el nuevo nodo
-
-     */
-
     public String addByPosition(Book book, int position) throws ListSEException {
-        if (position > 0) {
-            if (position == 1) {
-                addStart(book);
-                return "Book Successfully Added!";
-            } else {
-                if (position > this.size) {
-                    add(book);
-                    return "Book Successfully Added at the final!";
-                } else {
-                    int i = 1;
-                    Node temp = this.head;
-                    while (i < (position - 1)) {
-                        temp = temp.getNext();
-                        i += 1;
-                    }
-                    Node newNode = new Node(book);
-                    newNode.setNext(temp.getNext());
-                    temp.setNext(newNode);
-                    return "Book Successfully Added";
-                }
-            }
-        } else {
-            return "It can not be added in that position!";
+        if (head == null || position == 1) {
+            addStart(book);
+            return "Book Successfully Added";
         }
+        Node exist = head;
+        while (exist != null) {
+            if (exist.getData().getCode().equals(book.getCode())) {
+                return "Already in the list!";
+            }
+            exist = exist.getNext();
+        }
+        if (position > size) {
+            addEnd(book);
+        } else {
+            Node temp = head;
+            int count = 1;
+            while (count < (position - 1)) {
+                temp = temp.getNext();
+                count++;
+            }
+            Node newNode = new Node(book);
+            newNode.setNext(temp.getNext());
+            temp.setNext(newNode);
+            size++;
+        }
+        return "Book Successfully Added";
     }
 
-
-    /*
-    Algoritmo para eliminar un libro (niño).
-    La lista esta vacia
-    Si
-        Si el dato a buscar esta en la cabeza
-        Si
-            Cabeza es igual al siguiente nodo
-        No
-            Crear un temporal
-            Mientras el sig del sig del temp sea diferente a null y el id del sig del temporal sea diferente al buscado
-                temporal pasa al sig
-            El sig del temporal es igual al sig del sig del temporal.
-    No
-        Devolver un mensaje "No hay ningun dato"
-     */
-
-    public void delete(String id) {
+    public String deleteByCode(String id) {
         if (head != null) {
-
-            //Si el nodo a buscar es la cabeza
-            if (id == head.getData().getCode()) {
+            if (Objects.equals(id, head.getData().getCode())) {
                 head = head.getNext();
             } else {
                 Node temp = this.head;
-                while (temp.getNext().getNext() != null && !Objects.equals(temp.getNext().getData().getCode(), id)) {
+                while (temp.getNext() != null && !Objects.equals(temp.getNext().getData().getCode(), id)) {
                     temp = temp.getNext();
+                }
+                if (temp.getNext() == null) {
+                    return "That data is already out of the list or it wasn't in the list!";
                 }
                 temp.setNext(temp.getNext().getNext());
             }
             size--;
+            return "The data was eliminated successfully!";
         } else {
-            System.out.println("There is nothing to delete");
+            return "There is no data in the list";
         }
     }
 
-    /*
-    Algoritmo para invertir el orden de la lista
-    La lista esta vacia?
-    Si
-        Mostrar un mensaje: "No hay ningun dato en la lista"
-    No
-        Crear una nueva lista simplemente enlazada
-        Crear un temporal que sea igual a cabeza
-
-        Mientras temp sea diferente a Null
-            En la nueva lista, se agrega al inicio los datos del temporal
-            temporal pasa al sig
-
-        Cabeza es igual a la cabeza de la nueva lista.
-     */
-
-    public void invert() throws ListSEException {
+    public String invert() throws ListSEException {
         if (head != null) {
             ListSE newList = new ListSE();
             Node temp = this.head;
@@ -183,56 +113,30 @@ public class ListSE {
                 temp = temp.getNext();
             }
             head = newList.getHead();
+            return "Inverted List!";
         } else {
-            System.out.println("Ningun dato para mostrar");
+            return "There is no data in the list";
         }
     }
 
-    /*
-        Algoritmo para cambiar los extremos de la lista.
-        La lista esta vacia
-        Si
-            Mostrar un mensaje: "No hay ningun dato en la lista"
-        No
-            Crear un temporal y este toma la cabeza
-
-            Mietras el sig del sig del temporal sea diferente a nulo
-                Temporal pasa al sig
-
-            Crear una variable, esta guarda el sig del temporal el cual es el ultimo.
-            Temporal apunta a cabeza
-            La variable apunta al temporal
-            La cabeza es igual a ultimo
-            Y el sig del sig del temporal es igual a nulo
-
-     */
-
-    public void changeExtremes() {
+    public String changeExtremes() {
         if (head != null) {
-            Node ultimo;
+            Node last;
             Node temp = this.head;
+            //Ubicarse en el penultimo
             while (temp.getNext().getNext() != null) {
                 temp = temp.getNext();
             }
-            ultimo = temp.getNext();
+            last = temp.getNext();
             temp.setNext(head);
-            ultimo.setNext(temp);
-            head = ultimo;
+            last.setNext(head.getNext());
+            head = last;
             temp.getNext().setNext(null);
+            return "Extremes Changed!";
         } else {
-            System.out.println("Ningun dato que mostrar");
+            return "There is no data in the list";
         }
     }
-
-    /*
-    Quiero que me aparezcan los temas en el siguiente orden: Post-apocaliptico, Suspenso, Superación Personal.
-
-    Algoritmo para organizar por categoria
-    La lista esta vacia
-        Si
-            Devolver un mensaje: "No hay datos para ordenar"
-        No
-     */
 
     public String orderByCategory(OrderBookCategoryDTO orderBook) throws ListSEException {
         if (head != null) {
@@ -241,25 +145,23 @@ public class ListSE {
                 Node temp = head;
                 while (temp != null) {
                     if (temp.getData().getCategory().getName().equals(orderCategory)) {
-                        newListSE.add(temp.getData());
+                        newListSE.addEnd(temp.getData());
                     }
                     temp = temp.getNext();
                 }
             }
             head = newListSE.getHead();
-            return "List Ordered!";
+            return "List Ordered by Categories!";
         } else {
-            return "There is not any data to order!";
+            return "There is no data in the list!";
         }
     }
 
-
-    public int getCountBooksByCategoryCode(String code) {
+    public int getQuantityBooksByCategoryCode(String code) throws ListSEException {
         int count = 0;
         if (this.head != null) {
             Node temp = this.head;
             while (temp != null) {
-
                 if (temp.getData().getCategory().getCode().equals(code)) {
                     count++;
                 }
@@ -269,13 +171,13 @@ public class ListSE {
         return count;
     }
 
-    public String getOrderBooksByCetegoryByPages() throws ListSEException {
+    public String getOrderBookByPages() throws ListSEException {
         if (head == null) {
-            return "There is not any data to order!";
+            return "There is no data in the list!";
         }
         ListSE newList = new ListSE();
         Node temp = head.getNext();
-        newList.add(head.getData());
+        newList.addEnd(head.getData());
         while (temp != null) {
             int tempListQuantityPages = Integer.parseInt(temp.getData().getPages());
             Node temp2 = newList.getHead();
@@ -290,7 +192,7 @@ public class ListSE {
                     //Avanza al sig
                     if (tempNewListQuantityPages > tempListQuantityPages) {
                         if (temp2.getNext() == null) {
-                            newList.add(temp.getData());
+                            newList.addEnd(temp.getData());
                             break;
                         }
                         count++;
@@ -298,7 +200,7 @@ public class ListSE {
                     }
                     if (tempNewListQuantityPages <= tempListQuantityPages) {
                         if (tempNewListQuantityPages == tempListQuantityPages) {
-                            newList.add(temp.getData());
+                            newList.addEnd(temp.getData());
                             break;
                         }
                         newList.addByPosition(temp.getData(), count);
